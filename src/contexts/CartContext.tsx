@@ -1,8 +1,6 @@
-// src/contexts/CartContext.tsx
+'use client';  // Ensure this is a client-side component
 
-'use client';  // Add this line at the top to mark this file as a client component
-
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 // Define the session type
 interface Session {
@@ -10,10 +8,12 @@ interface Session {
   title: string;
   description: string;
   price: number;
+  available: boolean;
   startTime: string;
   endTime: string;
-  available: boolean; // Added availability status
-  date:Date;
+  image: string;
+  availableDates: Date[];
+  date?: Date; // Optional date property for the selected date
 }
 
 // Define the context state
@@ -33,6 +33,21 @@ interface CartProviderProps {
 
 export const CartProvider = ({ children }: CartProviderProps) => {
   const [cart, setCart] = useState<Session[]>([]);
+
+  // Load cart from localStorage when the component mounts
+  useEffect(() => {
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      setCart(JSON.parse(storedCart)); // Load the cart from localStorage if it exists
+    }
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    if (cart.length > 0) {
+      localStorage.setItem('cart', JSON.stringify(cart)); // Store the cart in localStorage
+    }
+  }, [cart]);
 
   const addToCart = (session: Session) => {
     setCart((prevCart) => [...prevCart, session]);
