@@ -6,36 +6,34 @@ export default function HomePage() {
     <main className="w-screen">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center text-center text-white w-full">
-  {/* YouTube Video Background */}
-  <div className="absolute inset-0 w-full h-full overflow-hidden">
-    <iframe
-      className="absolute top-0 left-0 w-full h-full"
-      src="https://www.youtube.com/embed/q8vVLsUQnQ8?autoplay=1&mute=1&loop=1&playlist=q8vVLsUQnQ8&controls=0&showinfo=0&modestbranding=1&playsinline=1"
-      title="YouTube video background"
-      frameBorder="0"
-      allow="autoplay; encrypted-media"
-      allowFullScreen
-    ></iframe>
-  </div>
+        {/* YouTube Video Background */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
+          <iframe
+            className="absolute top-0 left-0 w-full h-full"
+            src="https://www.youtube.com/embed/q8vVLsUQnQ8?autoplay=1&mute=1&loop=1&playlist=q8vVLsUQnQ8&controls=0&showinfo=0&modestbranding=1&playsinline=1"
+            title="YouTube video background"
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+          ></iframe>
+        </div>
 
-  {/* Overlay for Readability */}
-  <div className="absolute inset-0 bg-black opacity-50"></div>
+        {/* Overlay for Readability */}
+        <div className="absolute inset-0 bg-black opacity-50"></div>
 
-  {/* Content */}
-  <div className="relative z-10 px-6">
-    <h1 className="text-5xl font-bold mb-4 bg-[#fe0600] text-white px-4 py-2 inline-block">
-      RAMPWORX SKATEPARK
-    </h1>
-    <p className="text-xl mb-8">
-      “A COMMUNITY OF YOUNG PEOPLE USING EXTREME SPORTS TO DEVELOP THEIR PHYSICAL AND MENTAL WELL BEING”
-    </p>
-    <Link href="/book-a-session" className="px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition">
-      Book A Session
-    </Link>
-  </div>
-</section>
-
-
+        {/* Content */}
+        <div className="relative z-10 px-6">
+          <h1 className="text-5xl font-bold mb-4 bg-[#fe0600] text-white px-4 py-2 inline-block">
+            RAMPWORX SKATEPARK
+          </h1>
+          <p className="text-xl mb-8">
+            “A COMMUNITY OF YOUNG PEOPLE USING EXTREME SPORTS TO DEVELOP THEIR PHYSICAL AND MENTAL WELL BEING”
+          </p>
+          <Link href="/book-a-session" className="px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition">
+            Book A Session
+          </Link>
+        </div>
+      </section>
 
       {/* Services Section */}
       <section className="py-16 w-full bg-[#fe0600]">
