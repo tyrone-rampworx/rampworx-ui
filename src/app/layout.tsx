@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +29,37 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <nav className="bg-[#fe0600] p-1">
+          <div className="container mx-auto flex justify-between items-center">
+            <Link href="/">
+              <Image src="/images/logo.jpg" alt="Logo" width={120} height={50} />
+            </Link>
+            <ul className="flex space-x-6">
+              {[
+                { href: "/register", label: "REGISTER" },
+                { href: "/book-a-session", label: "BOOK A SESSION" },
+                { href: "/coaching", label: "COACHING" },
+                { href: "/times-prices", label: "TIMES & PRICES" },
+                { href: "/first-time", label: "FIRST TIME" },
+                { href: "/parties", label: "PARTIES" },
+                { href: "/faq", label: "FAQ" },
+                { href: "/charity", label: "CHARITY" },
+                { href: "/events", label: "EVENTS" },
+                { href: "/find-us", label: "FIND US" },
+              ].map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-white font-bold hover:underline"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
+        <main className="w-screen overflow-x-hidden">{children}</main>
       </body>
     </html>
   );

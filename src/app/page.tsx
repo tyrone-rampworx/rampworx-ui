@@ -1,101 +1,101 @@
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className="w-screen">
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-center justify-center text-center text-white w-full">
+  {/* YouTube Video Background */}
+  <div className="absolute inset-0 w-full h-full overflow-hidden">
+    <iframe
+      className="absolute top-0 left-0 w-full h-full"
+      src="https://www.youtube.com/embed/q8vVLsUQnQ8?autoplay=1&mute=1&loop=1&playlist=q8vVLsUQnQ8&controls=0&showinfo=0&modestbranding=1&playsinline=1"
+      title="YouTube video background"
+      frameBorder="0"
+      allow="autoplay; encrypted-media"
+      allowFullScreen
+    ></iframe>
+  </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  {/* Overlay for Readability */}
+  <div className="absolute inset-0 bg-black opacity-50"></div>
+
+  {/* Content */}
+  <div className="relative z-10 px-6">
+    <h1 className="text-5xl font-bold mb-4 bg-[#fe0600] text-white px-4 py-2 inline-block">
+      RAMPWORX SKATEPARK
+    </h1>
+    <p className="text-xl mb-8">
+      “A COMMUNITY OF YOUNG PEOPLE USING EXTREME SPORTS TO DEVELOP THEIR PHYSICAL AND MENTAL WELL BEING”
+    </p>
+    <Link href="/book-a-session" className="px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition">
+      Book A Session
+    </Link>
+  </div>
+</section>
+
+
+
+      {/* Services Section */}
+      <section className="py-16 w-full bg-[#fe0600]">
+        <div className="max-w-7xl mx-auto text-center px-6">
+          <h2 className="text-3xl font-bold mb-8 text-white">OUR SERVICES</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { title: "Coaching", image: "/images/coaching.jpg", link: "/coaching", desc: "Book a lesson with our experienced coaches to improve your skills." },
+              { title: "Parties", image: "/images/parties.jpg", link: "/parties", desc: "Celebrate your special occasions with an adrenaline-filled party." },
+              { title: "Events", image: "/images/events.jpg", link: "/events", desc: "Join our upcoming events and competitions to showcase your talent." },
+            ].map((service) => (
+              <div key={service.title} className="bg-gray-100 p-6 rounded-lg shadow-md w-full">
+                <div className="w-full flex justify-center">
+                  <Image 
+                    src={service.image} 
+                    alt={service.title} 
+                    width={400} 
+                    height={250} 
+                    className="rounded-lg object-cover" 
+                    style={{ maxWidth: "400px", maxHeight: "250px" }} 
+                  />
+                </div>
+                <h3 className="text-2xl font-semibold mt-4">{service.title}</h3>
+                <p className="mt-2 text-gray-600">{service.desc}</p>
+                <Link href={service.link} className="mt-4 inline-block px-4 py-2 bg-[#fe0600] text-white rounded-full hover:bg-blue-700 transition">
+                  Learn More
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="bg-white-200 py-16 w-full">
+        <div className="max-w-7xl mx-auto text-center px-6">
+          <h2 className="text-3xl font-bold mb-8">What Our Visitors Say</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { text: "Took my daughter Liv for her first skateboard lesson this afternoon and she absolutely loved it!", author: "Angela" },
+              { text: "The staff are so good with the kids, they love coming in for the day's activities.", author: "Kelden26" },
+              { text: "Rampworx skatepark is great for kids! Ordered scooters and merchandise from their online store.", author: "Claire" },
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-md w-full">
+                <p className="italic text-gray-600">"{testimonial.text}"</p>
+                <p className="mt-4 font-semibold">- {testimonial.author}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action Section */}
+      <section className="py-16 bg-[#fe0600] text-white text-center w-full">
+        <h2 className="text-3xl font-bold mb-4">Ready to Ride?</h2>
+        <p className="mb-8">Register now and join our community of extreme sports enthusiasts!</p>
+        <Link href="/register" className="px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition">
+          Register Here
+        </Link>
+      </section>
+    </main>
   );
 }
