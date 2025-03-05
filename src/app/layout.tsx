@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { CartProvider } from '../contexts/CartContext'; // Adjust the path if necessary
 import CartSummary from "../components/CartSummary"; // Make sure CartSummary is correctly imported
+import "react-datepicker/dist/react-datepicker.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -7,9 +7,13 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 // Define the session type
 interface Session {
   id: number;
+  title: string;
+  description: string;
+  price: number;
   startTime: string;
   endTime: string;
   available: boolean; // Added availability status
+  date:Date;
 }
 
 // Define the context state
