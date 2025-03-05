@@ -24,10 +24,10 @@ export default function HomePage() {
         {/* Content */}
         <div className="relative z-10 px-6">
           <h1 className="text-5xl font-bold mb-4 bg-[#fe0600] text-white px-4 py-2 inline-block">
-            RAMPWORX SKATEPARK
+            RAMPWORX YOUTH VILLAGE
           </h1>
           <p className="text-xl mb-8">
-            “A COMMUNITY OF YOUNG PEOPLE USING EXTREME SPORTS TO DEVELOP THEIR PHYSICAL AND MENTAL WELL BEING”
+            EXPLORE OUR FACILITY
           </p>
           <Link href="/book-a-session" className="px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition">
             Book A Session
@@ -35,12 +35,72 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* New Section with Background, Title, Subtitle, and Icons */}
+      <section className="relative w-full bg-cover bg-center py-120" style={{ backgroundImage: 'url("/images/rider.jpg")' }}>
+        <div className="absolute inset-0 bg-black opacity-0"></div>
+        <div className="relative z-10 text-center text-white px-6">
+          <h2 className="text-5xl font-bold mb-4 bg-[#fe0600] text-white px-4 py-2 inline-block">RAMPWORX SKATEPARK</h2>
+          <h3 className="text-4xl font-bold mb-4 px-4 py-2 ">“A COMMUNITY OF YOUNG PEOPLE USING EXTREME SPORTS TO DEVELOP THEIR PHYSICAL AND MENTAL WELL BEING”</h3>
+          <p className="text-lg max-w-3xl mx-auto">
+          Rampworx Skatepark (Charity: 1097748) is a 70,000 sq. ft indoor extreme sports youth facility in Liverpool, UK. We are one of the longest running skateparks and extreme sports shops in the country and provide safe and secure facilities for over 1000 young people per week. For over 28 years, Rampworx has provided a world-class indoor skatepark/youth facility and through volunteering, coaching, outreach and community projects, we cultivate creativity to empower youth and professional athletes to soar higher than they ever thought possible.
+          </p>
+        </div>
+
+        {/* Icons Section */}
+<div className="max-w-7xl mx-auto px-6 mt-12 text-center">
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+    {/* Icon 1 */}
+    <div className="flex flex-col items-center text-center">
+      <div className="mb-4">
+        <Image
+          src="/images/location.png" // Replace with your icon path
+          alt="Icon 1"
+          width={50}
+          height={50}
+        />
+      </div>
+      <h3 className="text-xl text-white font-semibold mb-2">1997</h3>
+      <p className="text-sm text-white text-gray-600">Established</p>
+    </div>
+
+    {/* Icon 2 */}
+    <div className="flex flex-col items-center text-center">
+      <div className="mb-4">
+        <Image
+          src="/images/person.png" // Replace with your icon path
+          alt="Icon 2"
+          width={50}
+          height={50}
+        />
+      </div>
+      <h3 className="text-xl text-white font-semibold mb-2">61,000</h3>
+      <p className="text-sm text-white text-gray-600">Members & COUNTING!</p>
+    </div>
+
+    {/* Icon 3 */}
+    <div className="flex flex-col items-center text-center">
+      <div className="mb-4">
+        <Image
+          src="/images/star.png" // Replace with your icon path
+          alt="Icon 3"
+          width={50}
+          height={50}
+        />
+      </div>
+      <h3 className="text-xl text-white font-semibold mb-2">3000</h3>
+      <p className="text-sm text-white text-gray-600">Five star reviews</p>
+    </div>
+  </div>
+</div>
+
+      </section>
+
       {/* Services Section */}
       <section className="py-16 w-full bg-[#fe0600]">
         <div className="max-w-7xl mx-auto text-center px-6">
           <h2 className="text-3xl font-bold mb-8 text-white">OUR SERVICES</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
+            {[ 
               { title: "Coaching", image: "/images/coaching.jpg", link: "/coaching", desc: "Book a lesson with our experienced coaches to improve your skills." },
               { title: "Parties", image: "/images/parties.jpg", link: "/parties", desc: "Celebrate your special occasions with an adrenaline-filled party." },
               { title: "Events", image: "/images/events.jpg", link: "/events", desc: "Join our upcoming events and competitions to showcase your talent." },
@@ -72,7 +132,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto text-center px-6">
           <h2 className="text-3xl font-bold mb-8">What Our Visitors Say</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
+            {[ 
               { text: "Took my daughter Liv for her first skateboard lesson this afternoon and she absolutely loved it!", author: "Angela" },
               { text: "The staff are so good with the kids, they love coming in for the day's activities.", author: "Kelden26" },
               { text: "Rampworx skatepark is great for kids! Ordered scooters and merchandise from their online store.", author: "Claire" },
