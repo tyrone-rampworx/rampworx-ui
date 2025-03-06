@@ -48,12 +48,12 @@ const CheckoutPage = () => {
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
         <div className="space-y-4">
-          {cart.map((session, index) => (
-            <div key={index} className="flex justify-between items-center border-b pb-4">
+          {cart.map((session) => (
+            <div key={session.id} className="flex justify-between items-center border-b pb-4">
               <div className="flex flex-col">
                 <span className="font-semibold">{session.title}</span>
                 <span className="text-sm text-gray-600">
-                  Date: {session.date ? session.date.toLocaleDateString() : 'N/A'}
+                  Date: {session.date instanceof Date && !isNaN(session.date.getTime()) ? session.date.toLocaleDateString() : 'N/A'}
                 </span>
                 <span className="text-sm text-gray-600">Time: {session.startTime} - {session.endTime}</span>
               </div>
