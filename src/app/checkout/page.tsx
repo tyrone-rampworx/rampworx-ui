@@ -1,56 +1,82 @@
-'use client'; // Ensure this is a client-side component
+'use client';
 
-import { useCart } from '../../contexts/CartContext'; // Import the useCart hook
+import { useCart } from '../../contexts/CartContext';
 import { useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { loadStripe } from '@stripe/stripe-js';
+
+// Validate Stripe key
+const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+if (!stripeKey) {
+  console.error("Stripe publishable key is missing");
+}
+
+const stripePromise = stripeKey ? loadStripe(stripeKey) : null;
 
 const CheckoutPage = () => {
-  const { cart, clearCart } = useCart(); // Access the cart from context
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [streetNumber, setStreetNumber] = useState('');
-  const [streetName, setStreetName] = useState('');
-  const [town, setTown] = useState('');
-  const [county, setCounty] = useState('');
-  const [postcode, setPostcode] = useState('');
-  const [country, setCountry] = useState('');
+  const { cart, clearCart } = useCart();
+  const router = useRouter();
+  
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+  });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Function to calculate the total price
-  const calculateTotal = () => {
-    return cart.reduce((total, session) => total + session.price, 0).toFixed(2);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Validate email format
-  const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+  const calculateTotal = () => {
+    return Number(cart.reduce((total, session) => total + (session.price || 0), 0)).toFixed(2);
+  };
 
-  // Handle form submission
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-
-    if (!isValidEmail(email)) {
-      alert('Please enter a valid email address.');
-      setIsSubmitting(false);
+  const handlePayment = async () => {
+    if (!formData.firstName || !formData.lastName || !formData.email) {
+      alert("Please fill in all fields.");
       return;
     }
 
-    // Simulate order processing
-    setTimeout(() => {
-      alert('Your order has been placed!');
-      clearCart(); // Clears the cart
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/checkout_sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cart, email: formData.email }),
+      });
+
+      if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+
+      const data = await response.json();
+      if (data.url) {
+        router.push(data.url); // Use Next.js navigation
+      } else {
+        throw new Error("Payment failed");
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("Error processing payment. Please try again.");
+    } finally {
       setIsSubmitting(false);
-    }, 2000);
+    }
   };
+
+  const isFormInvalid = !formData.firstName || !formData.lastName || !formData.email || cart.length === 0;
 
   if (cart.length === 0) {
     return (
       <div className="text-center py-8">
         <h1 className="text-2xl font-bold">Your Cart is Empty</h1>
-        <Link href="/" className="mt-4 inline-block px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition">
-          Go Back to Home
-        </Link>
+        <p className="mt-2 text-gray-600">Looks like you haven't added anything yet.</p>
+        <button 
+          onClick={() => router.push('/')} 
+          className="mt-4 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-full transition"
+        >
+          Browse Sessions
+        </button>
       </div>
     );
   }
@@ -59,106 +85,86 @@ const CheckoutPage = () => {
     <div className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-3xl font-bold mb-8 text-center">Checkout</h1>
 
-      {/* Cart Items Review */}
+      {/* Cart Items */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
-        <div className="space-y-4">
-          {cart.map((session) => (
-            <div key={session.id} className="flex justify-between items-center border-b pb-4 px-4 py-2 bg-[#fe0600] rounded-lg">
-              <div className="flex flex-col text-white">
-                <span className="font-semibold text-white">{session.title}</span>
-                <span className="text-sm text-white">
-                  Date: {session.date ? new Date(session.date).toLocaleDateString() : 'N/A'}
-                </span>
-                <span className="text-sm text-white">Time: {session.startTime} - {session.endTime}</span>
+        {cart.map((session, index) => {
+          // Generate a unique key
+          const uniqueKey = session.id ? `session-${session.id}` : `index-${index}-${Math.random()}`;
+
+          return (
+            <div key={uniqueKey} className="flex justify-between items-center border-b pb-4">
+              <div>
+                <p className="font-semibold">{session.title}</p>
+                <p className="text-sm">
+                  Date: {session.date ? new Date(session.date).toLocaleDateString() : "N/A"}
+                </p>
+                <p className="text-sm">
+                  Time: {session.startTime || "N/A"} - {session.endTime || "N/A"}
+                </p>
               </div>
-              <div className="font-semibold">£{session.price.toFixed(2)}</div>
+              <div className="font-semibold">
+                £{session.price ? session.price.toFixed(2) : "0.00"}
+              </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
-      {/* Form for User Details */}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium mb-2">First Name</label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Last Name</label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
-
-        {/* Billing Address Fields */}
+      {/* Form */}
+      <form className="space-y-6">
         <div>
-          <h2 className="text-lg font-semibold mb-4">Billing Address</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium mb-2">Street Number</label>
-              <input type="text" value={streetNumber} onChange={(e) => setStreetNumber(e.target.value)} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Street Name</label>
-              <input type="text" value={streetName} onChange={(e) => setStreetName(e.target.value)} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Town</label>
-              <input type="text" value={town} onChange={(e) => setTown(e.target.value)} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">County</label>
-              <input type="text" value={county} onChange={(e) => setCounty(e.target.value)} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Postcode</label>
-              <input type="text" value={postcode} onChange={(e) => setPostcode(e.target.value)} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Country</label>
-              <input type="text" value={country} onChange={(e) => setCountry(e.target.value)} required className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-          </div>
+          <label className="block text-sm font-medium mb-2">First Name</label>
+          <input 
+            type="text" 
+            name="firstName"
+            value={formData.firstName} 
+            onChange={handleChange} 
+            required 
+            className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-red-300"
+          />
         </div>
-
-        {/* Total Price */}
-        <div className="text-right font-semibold text-lg">
-          <span>Total: </span>
-          <span>£{calculateTotal()}</span>
+        <div>
+          <label className="block text-sm font-medium mb-2">Last Name</label>
+          <input 
+            type="text" 
+            name="lastName"
+            value={formData.lastName} 
+            onChange={handleChange} 
+            required 
+            className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-red-300"
+          />
         </div>
-              {/* Pay Now Button */}
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            className="px-6 py-3 bg-[#fe0600] text-white rounded-full hover:bg-[#d40500] transition"
-          >
-            Pay Now
-          </button>
+        <div>
+          <label className="block text-sm font-medium mb-2">Email</label>
+          <input 
+            type="email" 
+            name="email"
+            value={formData.email} 
+            onChange={handleChange} 
+            required 
+            className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-red-300"
+          />
         </div>
       </form>
+
+      {/* Total Price */}
+      <div className="text-right font-semibold text-lg">
+        <span>Total: £{calculateTotal()}</span>
+      </div>
+
+      {/* Pay Now Button */}
+      <div className="mt-4 text-center">
+        <button
+          type="button"
+          onClick={handlePayment}
+          disabled={isSubmitting || isFormInvalid}
+          className={`px-6 py-3 ${
+            isSubmitting || isFormInvalid ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#fe0600] hover:bg-red-600'
+          } text-white rounded-full transition`}
+        >
+          {isSubmitting ? "Processing..." : "Pay Now"}
+        </button>
+      </div>
     </div>
   );
 };
