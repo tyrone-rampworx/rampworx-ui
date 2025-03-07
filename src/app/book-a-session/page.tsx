@@ -6,7 +6,6 @@ import { useState } from 'react';
 import DatePicker from 'react-datepicker';  // Import the DatePicker component
 import "react-datepicker/dist/react-datepicker.css";  // Import the DatePicker CSS
 
-// Update the sessions array to include image, startTime, and endTime
 const sessions = [
   {
     id: 1,
@@ -18,11 +17,10 @@ const sessions = [
     endTime: "10:00 PM",
     image: "/images/weekday-300x300.jpg",  // Example image path
     availableDates: [
-      new Date(2025, 2, 12),  // March 12, 2025 (Thursday)
-      new Date(2025, 2, 13),  // March 13, 2025 (Friday)
-      new Date(2025, 2, 14),  // March 14, 2025 (Saturday)
-      // Add more Wednesdays, Thursdays, and Fridays for each week of the year
-    ], // Manually specify available dates for this session
+      new Date(2025, 2, 12),
+      new Date(2025, 2, 13),
+      new Date(2025, 2, 14),
+    ],
   },
   {
     id: 2,
@@ -32,11 +30,11 @@ const sessions = [
     available: true,
     startTime: "12:00 PM",
     endTime: "3:00 PM",
-    image: "/images/weekend-12-3-2.png",  // Example image path
+    image: "/images/weekend-12-3-2.png",
     availableDates: [
-      new Date(2025, 2, 17),  // March 17, 2025
-      new Date(2025, 2, 18),  // March 18, 2025
-    ],  // Define available dates for this session
+      new Date(2025, 2, 17),
+      new Date(2025, 2, 18),
+    ],
   },
   {
     id: 3,
@@ -46,50 +44,60 @@ const sessions = [
     available: true,
     startTime: "3:15 PM",
     endTime: "6:15 PM",
-    image: "/images/weekend-315-1.png",  // Example image path
+    image: "/images/weekend-315-1.png",
     availableDates: [
-      new Date(2025, 2, 19),  // March 19, 2025
-      new Date(2025, 2, 20),  // March 20, 2025
-    ],  // Define available dates for this session
+      new Date(2025, 2, 19),
+      new Date(2025, 2, 20),
+    ],
   },
-  // Add more sessions as needed
 ];
 
 const BookASessionPage = () => {
-  const { addToCart } = useCart();  // Access the addToCart function to add sessions to the cart
-  const [selectedSession, setSelectedSession] = useState<number | null>(null); // Track the selected session
-  const [showDatePicker, setShowDatePicker] = useState(false); // Control the visibility of the date picker
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);  // Track the selected date for the session
-  const [availableDates, setAvailableDates] = useState<Date[]>([]);  // Store available dates for the selected session
+  const { addToCart } = useCart();
+  const [selectedSession, setSelectedSession] = useState<number | null>(null); // Track selected session
+  const [showDatePicker, setShowDatePicker] = useState(false); // Control DatePicker visibility
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // Track selected date
+  const [availableDates, setAvailableDates] = useState<Date[]>([]); // Available dates for the session
+  const [showSessionDetails, setShowSessionDetails] = useState(false); // Show session details modal
+  const [cartMessage, setCartMessage] = useState<string | null>(null); // State for the cart confirmation message
 
   const handleAddToCart = (sessionId: number) => {
-    // Find the selected session based on the ID
     const selectedSession = sessions.find((session) => session.id === sessionId);
     if (selectedSession && selectedDate) {
-      // Add the session with the selected date to the cart
-      addToCart({ ...selectedSession, date: selectedDate }); // You can add the date to the session object
-      setShowDatePicker(false); // Close the date picker after adding to cart
+      addToCart({ ...selectedSession, date: selectedDate });
+      setShowDatePicker(false); // Close DatePicker after adding to cart
+      setShowSessionDetails(false); // Close the modal after adding to cart
+
+      // Set a success message
+      setCartMessage(`${selectedSession.title} has been added to your cart!`);
+
+      // Clear the success message after 3 seconds
+      setTimeout(() => setCartMessage(null), 2000);
     }
   };
 
   const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date); // Update the selected date, which can be Date or null
+    setSelectedDate(date);
   };
 
   const handleSessionSelect = (sessionId: number) => {
     const selectedSession = sessions.find((session) => session.id === sessionId);
     if (selectedSession) {
-      setAvailableDates(selectedSession.availableDates);  // Set the available dates for the session
-      setSelectedSession(sessionId);  // Store the selected session
-      setShowDatePicker(true);  // Show the date picker when "Book Now" is clicked
+      setAvailableDates(selectedSession.availableDates);
+      setSelectedSession(sessionId);
+      setShowSessionDetails(true); // Show the modal with session details and DatePicker
     }
   };
 
-  // Filter out dates that are not available for the selected session
   const isDateAvailable = (date: Date) => {
     return availableDates.some(
       (availableDate) => availableDate.toDateString() === date.toDateString()
     );
+  };
+
+  const closeSessionDetails = () => {
+    setShowSessionDetails(false); // Close the modal
+    setShowDatePicker(false); // Also close the DatePicker
   };
 
   return (
@@ -102,10 +110,9 @@ const BookASessionPage = () => {
             key={session.id}
             className={`bg-white p-6 rounded-lg shadow-lg ${session.available ? '' : 'opacity-50'}`}
           >
-            {/* Display session image */}
             <div className="w-full flex justify-center mb-4">
               <img
-                src={session.image}  // Use the image URL from the session object
+                src={session.image}
                 alt={session.title}
                 className="w-full h-48 object-cover rounded-lg"
               />
@@ -113,22 +120,17 @@ const BookASessionPage = () => {
             <h3 className="text-2xl font-semibold mb-2">{session.title}</h3>
             <p className="text-gray-600 mb-4">{session.description}</p>
             <p className="font-bold text-lg mb-4">${session.price}</p>
-
-            {/* Availability Status */}
             <p className={`${session.available ? 'text-green-500' : 'text-red-500'} mb-4`}>
               {session.available ? "Available" : "Not Available"}
             </p>
-
-            {/* Start and End Time */}
             <p className="text-gray-600 mb-4">
               Time: {session.startTime} - {session.endTime}
             </p>
 
-            {/* Add to Cart Button */}
             <button
               onClick={() => handleSessionSelect(session.id)}
               className={`px-6 py-3 bg-[#fe0600] text-white rounded-full hover:bg-red-700 transition ${session.available ? '' : 'cursor-not-allowed'}`}
-              disabled={!session.available}  // Disable the button if the session is not available
+              disabled={!session.available}
             >
               Book Now
             </button>
@@ -136,28 +138,54 @@ const BookASessionPage = () => {
         ))}
       </div>
 
-      {/* Show DatePicker when a session is selected */}
-      {showDatePicker && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
+      {/* Display Cart Confirmation Message in the center of the screen */}
+      {cartMessage && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-green-600 text-white p-6 rounded-lg shadow-lg">
+            {cartMessage}
+          </div>
+        </div>
+      )}
+
+      {/* Session Details Modal */}
+      {showSessionDetails && selectedSession !== null && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center z-40">
           <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-semibold mb-4">Select a Date</h2>
-            <DatePicker
-              selected={selectedDate}  // Pass the selected date to the DatePicker
-              onChange={handleDateChange}  // Handle date change, now accepts Date | null
-              minDate={new Date()}  // Prevent past dates
-              filterDate={isDateAvailable}  // Only allow available dates
-              dateFormat="MMMM d, yyyy"  // Format the date display
-              className="w-full p-3 border rounded-lg mb-4"
-            />
+            <h2 className="text-xl font-semibold mb-4">Session Details</h2>
+            <div className="mb-4">
+              <h3 className="text-2xl font-semibold">{sessions[selectedSession - 1].title}</h3>
+              <img
+                src={sessions[selectedSession - 1].image}
+                alt={sessions[selectedSession - 1].title}
+                className="w-full h-48 object-cover rounded-lg mb-4"
+              />
+              <p>{sessions[selectedSession - 1].description}</p>
+              <p className="font-bold text-lg mt-2">${sessions[selectedSession - 1].price}</p>
+              <p className="mt-2">Time: {sessions[selectedSession - 1].startTime} - {sessions[selectedSession - 1].endTime}</p>
+            </div>
+
+            {/* Date Picker inside the modal */}
+            <div className="mb-4">
+              <h4 className="font-semibold mb-2">Select a Date</h4>
+              <DatePicker
+                selected={selectedDate}
+                onChange={handleDateChange}
+                minDate={new Date()} // Prevent past dates
+                filterDate={isDateAvailable}
+                dateFormat="MMMM d, yyyy"
+                className="w-full p-3 border rounded-lg mb-4"
+              />
+            </div>
+
             <div className="flex justify-between">
               <button
-                onClick={() => setShowDatePicker(false)}  // Close the date picker without adding
+                onClick={closeSessionDetails}
                 className="px-4 py-2 bg-gray-400 text-white rounded-full"
               >
-                Cancel
+                Close
               </button>
               <button
-                onClick={() => handleAddToCart(selectedSession!)}  // Add to cart with selected date
+                onClick={() => handleAddToCart(selectedSession)}
                 className="px-4 py-2 bg-green-600 text-white rounded-full"
               >
                 Add to Cart
