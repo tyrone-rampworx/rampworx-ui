@@ -5,3 +5,7 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+module.exports = {
+  reactStrictMode: false, // Change from true to false
+};
