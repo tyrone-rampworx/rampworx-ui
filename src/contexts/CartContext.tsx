@@ -1,4 +1,4 @@
-'use client';  // Ensure this is a client-side component
+'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
@@ -21,6 +21,7 @@ interface CartContextType {
   cart: Session[];
   addToCart: (session: Session) => void;
   removeFromCart: (sessionId: number) => void;
+  clearCart: () => void; // ✅ Added clearCart function
 }
 
 // Create the context
@@ -44,9 +45,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    if (cart.length > 0) {
-      localStorage.setItem('cart', JSON.stringify(cart)); // Store the cart in localStorage
-    }
+    localStorage.setItem('cart', JSON.stringify(cart)); // Store the cart in localStorage
   }, [cart]);
 
   const addToCart = (session: Session) => {
@@ -57,8 +56,13 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     setCart((prevCart) => prevCart.filter((session) => session.id !== sessionId));
   };
 
+  const clearCart = () => {
+    setCart([]); // ✅ Clears the cart
+    localStorage.removeItem('cart'); // ✅ Also remove from localStorage
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
