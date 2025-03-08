@@ -25,7 +25,7 @@ export default function PartiesPage() {
           transition={{ duration: 0.5 }}
         >
           <Image 
-            src="/images/party1.jpg" 
+            src="/images/parties/party1.jpg" 
             alt="Birthday Party at Rampworx" 
             width={600} 
             height={400} 
