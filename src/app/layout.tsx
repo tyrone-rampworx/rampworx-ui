@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <CartProvider>
           <NavBar /> {/* Moved the Navbar to its own component */}
-          <main className="w-screen overflow-x-hidden pt-16">{children}</main>
+          <main className="w-screen overflow-x-hidden">{children}</main>
           <CartSummary />
           <footer className="bg-[#fe0600] text-white text-center p-4 mt-6">
             <div className="container mx-auto">
