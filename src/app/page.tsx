@@ -10,7 +10,7 @@ export default function HomePage() {
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <iframe
             className="absolute top-0 left-0 w-full h-full"
-            src="https://www.youtube.com/embed/q8vVLsUQnQ8?autoplay=1&mute=1&loop=1&playlist=q8vVLsUQnQ8&controls=0&showinfo=0&modestbranding=1&playsinline=1"
+            src="https://www.youtube.com/embed/S9kiiTWuq8g?autoplay=1&mute=1&loop=1&playlist=q8vVLsUQnQ8&controls=0&showinfo=0&modestbranding=1&playsinline=1"
             title="YouTube video background"
             frameBorder="0"
             allow="autoplay; encrypted-media"
