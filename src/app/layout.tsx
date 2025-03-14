@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <NavBar /> {/* Moved the Navbar to its own component */}
           <main className="w-screen overflow-x-hidden pt-16">{children}</main>
           <CartSummary />
-          <footer className="bg-gray-900 text-white text-center p-4 mt-6">
+          <footer className="bg-[#fe0600] text-white text-center p-4 mt-6">
             <div className="container mx-auto">
               <p>&copy; {new Date().getFullYear()} Rampworx Skatepark Liverpool. All rights reserved.</p>
               <div className="flex justify-center space-x-4 mt-2">
